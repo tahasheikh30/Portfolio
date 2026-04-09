@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Taha Ahmed Sheikh — SQA Engineer</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Lora:ital,wght@0,400;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#0a0a0f; --bg2:#0f0f18; --surface:#14141f; --border:#1e1e30;
+    --accent:#7c6af7; --accent2:#f0b429; --accent3:#2af598;
+    --text:#e8e8f0; --muted:#6b6b8a; --dim:#3a3a55;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;font-size:14px;line-height:1.7;overflow-x:hidden;cursor:none}
+
+  .cursor-dot{width:6px;height:6px;background:var(--accent);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999}
+  .cursor-ring{width:32px;height:32px;border:1.5px solid var(--accent);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transition:width .2s,height .2s,border-color .2s;opacity:.6}
+  .cursor-ring.hover{width:48px;height:48px;border-color:var(--accent2)}
+
+  body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:1;opacity:.4}
+  .grid-lines{position:fixed;inset:0;background-image:linear-gradient(rgba(124,106,247,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(124,106,247,.03) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0}
+
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 48px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid transparent;transition:all .3s}
+  nav.scrolled{background:rgba(10,10,15,.93);backdrop-filter:blur(20px);border-bottom-color:var(--border)}
+  .nav-logo{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;letter-spacing:-.5px;color:var(--text);text-decoration:none}
+  .nav-logo span{color:var(--accent)}
+  .nav-links{display:flex;gap:32px;list-style:none}
+  .nav-links a{color:var(--muted);text-decoration:none;font-size:12px;letter-spacing:.1em;text-transform:uppercase;transition:color .2s;position:relative}
+  .nav-links a::after{content:'';position:absolute;bottom:-2px;left:0;width:0;height:1px;background:var(--accent);transition:width .2s}
+  .nav-links a:hover{color:var(--text)}
+  .nav-links a:hover::after{width:100%}
+
+  section{position:relative;z-index:2}
+
+  #hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:120px 48px 80px;gap:80px;max-width:1400px;margin:0 auto}
+
+  .hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border:1px solid var(--border);border-radius:2px;font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--accent3);margin-bottom:28px;opacity:0;animation:fadeUp .6s ease .2s forwards}
+  .hero-badge::before{content:'';width:6px;height:6px;background:var(--accent3);border-radius:50%;animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
+
+  .hero-name{font-family:'Syne',sans-serif;font-size:clamp(48px,6.5vw,90px);font-weight:800;line-height:.95;letter-spacing:-3px;margin-bottom:10px;opacity:0;animation:fadeUp .7s ease .3s forwards}
+  .hero-name .outline{display:block;color:transparent;-webkit-text-stroke:1.5px var(--accent)}
+  .hero-title{font-family:'Lora',serif;font-style:italic;font-size:17px;color:var(--muted);margin-bottom:24px;opacity:0;animation:fadeUp .7s ease .4s forwards}
+  .hero-desc{font-size:13px;color:var(--muted);max-width:420px;line-height:1.9;margin-bottom:36px;opacity:0;animation:fadeUp .7s ease .5s forwards}
+  .hero-ctas{display:flex;gap:16px;opacity:0;animation:fadeUp .7s ease .6s forwards}
+
+  .btn-primary{padding:12px 28px;background:var(--accent);color:#fff;text-decoration:none;font-size:12px;letter-spacing:.1em;text-transform:uppercase;border-radius:2px;transition:all .2s;position:relative;overflow:hidden}
+  .btn-primary::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,.1);transform:translateX(-100%);transition:transform .3s}
+  .btn-primary:hover::before{transform:translateX(0)}
+  .btn-ghost{padding:12px 28px;border:1px solid var(--border);color:var(--muted);text-decoration:none;font-size:12px;letter-spacing:.1em;text-transform:uppercase;border-radius:2px;transition:all .2s}
+  .btn-ghost:hover{border-color:var(--accent);color:var(--text)}
+
+  .hero-right{opacity:0;animation:fadeLeft .8s ease .5s forwards}
+  .terminal{background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;box-shadow:0 40px 80px rgba(0,0,0,.6),0 0 0 1px rgba(124,106,247,.1)}
+  .terminal-bar{background:var(--bg2);padding:12px 16px;display:flex;align-items:center;gap:6px;border-bottom:1px solid var(--border)}
+  .t-dot{width:10px;height:10px;border-radius:50%}
+  .t-dot.r{background:#ff5f56}.t-dot.y{background:#ffbd2e}.t-dot.g{background:#27c93f}
+  .t-filename{margin-left:12px;font-size:11px;color:var(--muted)}
+  .terminal-body{padding:22px;font-size:12px;line-height:2}
+  .t-line{display:flex;gap:8px}
+  .t-prompt{color:var(--accent3)}.t-cmd{color:var(--accent)}.t-comment{color:var(--dim)}.t-key{color:var(--accent2)}.t-val{color:var(--text)}.t-link{color:var(--accent);text-decoration:none}
+  .t-cursor{display:inline-block;width:8px;height:14px;background:var(--accent3);animation:blink 1s step-end infinite;vertical-align:middle;margin-left:2px}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+  .hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);margin-top:1px}
+  .stat-box{background:var(--surface);padding:18px;text-align:center}
+  .stat-num{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--accent);display:block}
+  .stat-label{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+
+  @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes fadeLeft{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
+
+  .section-wrap{max-width:1400px;margin:0 auto;padding:100px 48px}
+  .section-label{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:flex;align-items:center;gap:12px}
+  .section-label::before{content:'';width:24px;height:1px;background:var(--accent)}
+  .section-title{font-family:'Syne',sans-serif;font-size:clamp(30px,4vw,54px);font-weight:800;letter-spacing:-2px;line-height:1;margin-bottom:56px}
+
+  /* ABOUT */
+  #about{background:var(--bg)}
+  .about-grid{display:grid;grid-template-columns:1fr 1.3fr;gap:72px;align-items:start}
+  .about-text{font-size:13px;color:var(--muted);line-height:2;margin-bottom:18px}
+  .about-text em{font-family:'Lora',serif;font-style:italic;color:var(--text)}
+  .ci-strip{display:flex;flex-direction:column;gap:10px;margin-top:28px}
+  .ci-row{display:flex;align-items:center;gap:12px;font-size:12px;color:var(--muted)}
+  .ci-icon{color:var(--accent2);font-size:14px;width:20px}
+  .ci-row a{color:var(--accent);text-decoration:none}
+  .ci-row a:hover{text-decoration:underline}
+  .certs-strip{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+  .cert-tag{padding:5px 14px;border:1px solid var(--border);border-radius:2px;font-size:11px;letter-spacing:.05em;color:var(--muted);transition:all .2s}
+  .cert-tag:hover{border-color:var(--accent2);color:var(--accent2);background:rgba(240,180,41,.05)}
+
+  .edu-card{border:1px solid var(--border);padding:20px;border-radius:4px;margin-bottom:12px;transition:border-color .2s,background .2s;position:relative;overflow:hidden}
+  .edu-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:0;background:var(--accent);transition:height .3s}
+  .edu-card:hover{border-color:var(--accent);background:rgba(124,106,247,.04)}
+  .edu-card:hover::before{height:100%}
+  .edu-degree{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:4px}
+  .edu-school{font-size:12px;color:var(--accent3);margin-bottom:4px}
+  .edu-meta{font-size:11px;color:var(--dim)}
+
+  /* SKILLS */
+  #skills{background:var(--bg2)}
+  .skills-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--border)}
+  .skill-block{background:var(--bg);padding:30px;transition:background .2s}
+  .skill-block:hover{background:var(--surface)}
+  .skill-block-icon{font-size:26px;margin-bottom:14px}
+  .skill-block-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:14px}
+  .skill-items{display:flex;flex-wrap:wrap;gap:7px}
+  .skill-pill{padding:3px 10px;background:var(--surface);border:1px solid var(--border);border-radius:2px;font-size:11px;color:var(--muted);transition:all .15s}
+  .skill-pill:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+
+  /* EXPERIENCE */
+  #experience{background:var(--bg)}
+  .timeline{position:relative}
+  .timeline::before{content:'';position:absolute;left:0;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,var(--accent),transparent)}
+  .timeline-item{padding-left:40px;margin-bottom:60px;position:relative;opacity:0;transform:translateY(20px);transition:opacity .5s,transform .5s}
+  .timeline-item.visible{opacity:1;transform:translateY(0)}
+  .timeline-item::before{content:'';position:absolute;left:-4px;top:6px;width:9px;height:9px;border-radius:50%;background:var(--accent);border:2px solid var(--bg);box-shadow:0 0 0 1px var(--accent)}
+  .exp-period{font-size:11px;letter-spacing:.1em;color:var(--accent);text-transform:uppercase;margin-bottom:6px}
+  .exp-role{font-family:'Syne',sans-serif;font-size:21px;font-weight:700;letter-spacing:-.5px;margin-bottom:4px}
+  .exp-company{font-size:12px;color:var(--accent3);margin-bottom:14px}
+  .exp-bullets{list-style:none;display:flex;flex-direction:column;gap:7px}
+  .exp-bullets li{font-size:13px;color:var(--muted);padding-left:16px;position:relative}
+  .exp-bullets li::before{content:'→';position:absolute;left:0;color:var(--accent)}
+  .exp-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+  .exp-tag{padding:3px 10px;background:rgba(124,106,247,.1);border:1px solid rgba(124,106,247,.2);border-radius:2px;font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--accent)}
+
+  /* PROJECTS */
+  #projects{background:var(--bg2)}
+  .projects-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:2px;background:var(--border)}
+  .project-card{background:var(--bg);padding:36px;position:relative;overflow:hidden;transition:background .2s;cursor:default}
+  .project-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2));transform:scaleX(0);transform-origin:left;transition:transform .3s}
+  .project-card:hover{background:var(--surface)}
+  .project-card:hover::after{transform:scaleX(1)}
+  .project-num{font-family:'Syne',sans-serif;font-size:60px;font-weight:800;color:var(--border);position:absolute;top:16px;right:20px;line-height:1;transition:color .2s;user-select:none}
+  .project-card:hover .project-num{color:var(--dim)}
+  .project-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent2);margin-bottom:10px}
+  .project-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;margin-bottom:10px;letter-spacing:-.5px}
+  .project-desc{font-size:12px;color:var(--muted);line-height:1.9;margin-bottom:16px}
+  .project-stack{display:flex;flex-wrap:wrap;gap:6px}
+  .stack-tag{padding:3px 8px;background:var(--surface);border-radius:2px;font-size:10px;color:var(--dim)}
+
+  /* ATTRIBUTES */
+  #attributes{background:var(--bg)}
+  .attr-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:2px;background:var(--border)}
+  .attr-card{background:var(--bg2);padding:28px 32px;display:flex;align-items:flex-start;gap:16px;transition:background .2s}
+  .attr-card:hover{background:var(--surface)}
+  .attr-icon{font-size:22px;margin-top:2px;flex-shrink:0}
+  .attr-text{font-size:13px;color:var(--muted);line-height:1.8}
+
+  /* CONTACT */
+  #contact{background:var(--bg2)}
+  .contact-inner{max-width:720px}
+  .avail-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border:1px solid rgba(42,245,152,.3);border-radius:2px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent3);margin-bottom:36px}
+  .avail-badge::before{content:'';width:7px;height:7px;background:var(--accent3);border-radius:50%;animation:pulse 2s infinite}
+  .contact-line{font-family:'Syne',sans-serif;font-size:clamp(28px,4vw,52px);font-weight:800;letter-spacing:-2px;line-height:1.1;margin-bottom:40px}
+  .contact-line .highlight{color:transparent;-webkit-text-stroke:1.5px var(--accent2)}
+  .contact-links{display:flex;flex-direction:column;gap:2px;margin-bottom:48px;background:var(--border)}
+  .contact-link-row{display:flex;align-items:center;justify-content:space-between;padding:20px 28px;background:var(--surface);text-decoration:none;color:var(--text);transition:background .2s;position:relative;overflow:hidden}
+  .contact-link-row::before{content:'';position:absolute;left:0;top:0;bottom:0;width:0;background:var(--accent);opacity:.08;transition:width .3s}
+  .contact-link-row:hover{background:var(--bg)}
+  .contact-link-row:hover::before{width:100%}
+  .clr-left{display:flex;align-items:center;gap:16px}
+  .clr-icon{font-size:16px}
+  .clr-label{font-size:13px}
+  .clr-value{font-size:12px;color:var(--accent)}
+  .clr-arrow{color:var(--muted);transition:transform .2s}
+  .contact-link-row:hover .clr-arrow{transform:translateX(4px)}
+  .contact-footer{display:flex;align-items:center;justify-content:space-between;padding-top:36px;border-top:1px solid var(--border);font-size:11px;color:var(--dim);letter-spacing:.05em}
+  .contact-footer a{color:var(--muted);text-decoration:none}
+  .contact-footer a:hover{color:var(--text)}
+
+  @media(max-width:900px){
+    #hero{grid-template-columns:1fr;padding:100px 24px 60px;gap:48px}
+    .about-grid{grid-template-columns:1fr;gap:40px}
+    .skills-grid{grid-template-columns:1fr 1fr}
+    .projects-grid,.attr-grid{grid-template-columns:1fr}
+    .section-wrap{padding:80px 24px}
+    nav{padding:16px 24px}
+    .nav-links{gap:18px}
+  }
+  @media(max-width:600px){
+    .skills-grid{grid-template-columns:1fr}
+    .hero-name{font-size:46px}
+    .nav-links{display:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="grid-lines"></div>
+
+<nav id="navbar">
+  <a href="#hero" class="nav-logo">TAS<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div>
+    <div class="hero-badge">Open to Opportunities</div>
+    <h1 class="hero-name">
+      Taha Ahmed
+      <span class="outline">Sheikh</span>
+    </h1>
+    <p class="hero-title">SQA Engineer · Fintech & SaaS · AI Workflow</p>
+    <p class="hero-desc">Detail-oriented SQA Engineer with hands-on fintech testing experience in Agile environments. Software engineering foundation enabling deep understanding of system architecture, API behaviour, and root cause analysis.</p>
+    <div class="hero-ctas">
+      <a href="#contact" class="btn-primary">Get in Touch</a>
+      <a href="#experience" class="btn-ghost">View Experience</a>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="terminal">
+      <div class="terminal-bar">
+        <div class="t-dot r"></div><div class="t-dot y"></div><div class="t-dot g"></div>
+        <span class="t-filename">taha.json</span>
+      </div>
+      <div class="terminal-body">
+        <div class="t-line"><span class="t-prompt">$</span> <span class="t-cmd">cat</span> <span style="color:var(--text)">taha.json</span></div><br>
+        <div class="t-line"><span style="color:var(--dim)">{</span></div>
+        <div class="t-line" style="padding-left:16px"><span class="t-key">"name"</span>: <span class="t-val">"Taha Ahmed Sheikh"</span>,</div>
+        <div class="t-line" style="padding-left:16px"><span class="t-key">"role"</span>: <span class="t-val">"SQA Engineer"</span>,</div>
+        <div class="t-line" style="padding-left:16px"><span class="t-key">"location"</span>: <span class="t-val">"Karachi, Pakistan"</span>,</div>
+        <div class="t-line" style="padding-left:16px"><span class="t-key">"email"</span>: <a class="t-link" href="mailto:tahasheikh30@gmail.com">"tahasheikh30@gmail.com"</a>,</div>
+        <div class="t-line" style="padding-left:16px"><span class="t-key">"phone"</span>: <span class="t-val">"+92 318 125 6636"</span>,</div>
+        <div class="t-line" style="padding-left:16px"><span class="t-key">"degree"</span>: <span class="t-val">"BS Software Engineering"</span>,</div>
+        <div class="t-line" style="padding-left:16px"><span class="t-key">"domains"</span>: <span class="t-val">"Fintech · SaaS · AI"</span>,</div>
+        <div class="t-line" style="padding-left:16px"><span class="t-key">"status"</span>: <span class="t-val" style="color:var(--accent3)">"open_to_work"</span></div>
+        <div class="t-line"><span style="color:var(--dim)">}</span></div><br>
+        <div class="t-line"><span class="t-prompt">$</span> <span class="t-cursor"></span></div>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-box"><span class="stat-num">2+</span><span class="stat-label">Internships</span></div>
+        <div class="stat-box"><span class="stat-num">3</span><span class="stat-label">Certifications</span></div>
+        <div class="stat-box"><span class="stat-num">6</span><span class="stat-label">Projects</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-wrap">
+    <div class="section-label">About Me</div>
+    <div class="section-title">Discipline, integrity,<br>and honest work.</div>
+    <div class="about-grid">
+      <div>
+        <p class="about-text">Technology and business systems have always been more than technical exercises to me. They represent <em>responsibility, trust, and the backbone of real operations.</em></p>
+        <p class="about-text">Through hands-on experience in <em>financial applications and structured enterprise environments</em>, I have learned to approach systems with discipline, integrity, and accountability. I believe in clear communication and standing by the commitments I make.</p>
+        <p class="about-text">When responsibility increases, so does my effort. I'm seeking a role where I can contribute with <em>loyalty, consistency, and the willingness to give more</em> whenever the organisation needs it.</p>
+        <div class="ci-strip">
+          <div class="ci-row"><span class="ci-icon">📧</span><a href="mailto:tahasheikh30@gmail.com">tahasheikh30@gmail.com</a></div>
+          <div class="ci-row"><span class="ci-icon">📞</span><span>+92 318 125 6636</span></div>
+          <div class="ci-row"><span class="ci-icon">📍</span><span>Karachi, Pakistan · Remote-ready</span></div>
+          <div class="ci-row"><span class="ci-icon">💼</span><a href="https://linkedin.com/in/taha-sheikh-a3520921a" target="_blank">linkedin.com/in/taha-sheikh-a3520921a</a></div>
+        </div>
+        <div class="certs-strip">
+          <span class="cert-tag">Google Project Management</span>
+          <span class="cert-tag">Google Business Intelligence</span>
+          <span class="cert-tag">LUMS — Business Communication & AI</span>
+        </div>
+      </div>
+      <div>
+        <div class="edu-card">
+          <div class="edu-degree">BS Software Engineering</div>
+          <div class="edu-school">UBIT — University of Karachi</div>
+          <div class="edu-meta">Jan 2022 – Dec 2025 · Karachi, Pakistan</div>
+        </div>
+        <div class="edu-card">
+          <div class="edu-degree">A Levels</div>
+          <div class="edu-school">Happy Palace A Levels College</div>
+          <div class="edu-meta">Sep 2019 – Jun 2021</div>
+        </div>
+        <div class="edu-card">
+          <div class="edu-degree">O Levels</div>
+          <div class="edu-school">Happy Palace Grammar School</div>
+          <div class="edu-meta">Sep 2016 – Jun 2019</div>
+        </div>
+        <div class="edu-card">
+          <div class="edu-degree">Google Project Management Certificate</div>
+          <div class="edu-school">Google · Coursera</div>
+          <div class="edu-meta">Agile · Risk management · Stakeholder communication · Project delivery</div>
+        </div>
+        <div class="edu-card">
+          <div class="edu-degree">Google Business Intelligence Certificate</div>
+          <div class="edu-school">Google · Coursera</div>
+          <div class="edu-meta">BI tools · Data visualisation · Data-driven decision-making</div>
+        </div>
+        <div class="edu-card">
+          <div class="edu-degree">Business Communication & AI for Professionals</div>
+          <div class="edu-school">LUMS</div>
+          <div class="edu-meta">Professional communication · Presentation · Negotiation · AI workflows</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-wrap">
+    <div class="section-label">Capabilities</div>
+    <div class="section-title">What I bring<br>to the table.</div>
+    <div class="skills-grid">
+      <div class="skill-block">
+        <div class="skill-block-icon">🧪</div>
+        <div class="skill-block-title">Testing Disciplines</div>
+        <div class="skill-items">
+          <span class="skill-pill">Manual & Functional Testing</span>
+          <span class="skill-pill">Mobile App Testing (iOS/Android)</span>
+          <span class="skill-pill">Performance & Load Testing</span>
+          <span class="skill-pill">Regression & Smoke Testing</span>
+          <span class="skill-pill">User Acceptance Testing (UAT)</span>
+          <span class="skill-pill">System Validation</span>
+        </div>
+      </div>
+      <div class="skill-block">
+        <div class="skill-block-icon">📋</div>
+        <div class="skill-block-title">QA Processes</div>
+        <div class="skill-items">
+          <span class="skill-pill">Test Case Design & Documentation</span>
+          <span class="skill-pill">Bug Reporting & Root Cause Analysis</span>
+          <span class="skill-pill">Agile / Scrum QA Workflows</span>
+          <span class="skill-pill">Sprint-based Delivery</span>
+          <span class="skill-pill">Requirements Traceability</span>
+          <span class="skill-pill">Defect Lifecycle Management</span>
+        </div>
+      </div>
+      <div class="skill-block">
+        <div class="skill-block-icon">⚙️</div>
+        <div class="skill-block-title">Technical Skills</div>
+        <div class="skill-items">
+          <span class="skill-pill">JavaScript</span>
+          <span class="skill-pill">SQL</span>
+          <span class="skill-pill">MongoDB</span>
+          <span class="skill-pill">React.js</span>
+          <span class="skill-pill">Node.js</span>
+          <span class="skill-pill">Express.js</span>
+          <span class="skill-pill">API Testing (Postman)</span>
+          <span class="skill-pill">Git / GitHub</span>
+        </div>
+      </div>
+      <div class="skill-block">
+        <div class="skill-block-icon">🗂️</div>
+        <div class="skill-block-title">Business & Systems</div>
+        <div class="skill-items">
+          <span class="skill-pill">Business Process Understanding</span>
+          <span class="skill-pill">Workflow & Data Flow Analysis</span>
+          <span class="skill-pill">Requirement Clarification</span>
+          <span class="skill-pill">BA Documentation</span>
+          <span class="skill-pill">Reporting Logic & Data Accuracy</span>
+        </div>
+      </div>
+      <div class="skill-block">
+        <div class="skill-block-icon">🛠️</div>
+        <div class="skill-block-title">Tools & Platforms</div>
+        <div class="skill-items">
+          <span class="skill-pill">Jira</span>
+          <span class="skill-pill">Trello</span>
+          <span class="skill-pill">ClickUp</span>
+          <span class="skill-pill">Postman</span>
+          <span class="skill-pill">Google Workspace</span>
+          <span class="skill-pill">Microsoft Office</span>
+          <span class="skill-pill">Git / GitHub</span>
+        </div>
+      </div>
+      <div class="skill-block">
+        <div class="skill-block-icon">📊</div>
+        <div class="skill-block-title">Data & BI</div>
+        <div class="skill-items">
+          <span class="skill-pill">SQL</span>
+          <span class="skill-pill">BigQuery</span>
+          <span class="skill-pill">Looker Studio</span>
+          <span class="skill-pill">Data Visualisation</span>
+          <span class="skill-pill">BI Dashboards</span>
+          <span class="skill-pill">Data Pipelines</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="section-wrap">
+    <div class="section-label">Experience</div>
+    <div class="section-title">Where I've<br>contributed.</div>
+    <div class="timeline">
+
+      <div class="timeline-item">
+        <div class="exp-period">Aug 2025 – Sep 2025</div>
+        <div class="exp-role">SQA Engineer — Internship</div>
+        <div class="exp-company">P3 Financial Group · Karachi, Pakistan</div>
+        <ul class="exp-bullets">
+          <li>Designed and executed comprehensive manual test cases for web and mobile financial applications — covering transaction workflows, account management, and administrative control modules</li>
+          <li>Performed functional and regression testing against documented business requirements; identified inconsistencies and reported detailed defect logs with reproducible steps</li>
+          <li>Conducted performance checks on critical fintech workflows, validating system responsiveness and stability under realistic usage scenarios to ensure production readiness</li>
+          <li>Tested mobile application builds across multiple device configurations, verifying UI consistency, input validation, and feature parity with web counterparts</li>
+          <li>Collaborated directly with developers and product owners to triage bugs, perform root cause analysis, and verify fixes — reducing defect recurrence across sprint cycles</li>
+          <li>Participated actively in Agile sprint planning, backlog grooming, and review sessions — contributing QA perspectives to prioritisation decisions and release readiness</li>
+        </ul>
+        <div class="exp-tags">
+          <span class="exp-tag">Manual Testing</span>
+          <span class="exp-tag">Fintech</span>
+          <span class="exp-tag">Mobile Testing</span>
+          <span class="exp-tag">Regression</span>
+          <span class="exp-tag">Root Cause Analysis</span>
+          <span class="exp-tag">Agile</span>
+          <span class="exp-tag">Bug Tracking</span>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="exp-period">Jun 2024 – Aug 2024</div>
+        <div class="exp-role">Software Engineering Intern</div>
+        <div class="exp-company">M-Labs by MindStorm Studios · Karachi, Pakistan</div>
+        <ul class="exp-bullets">
+          <li>Assisted in decomposing complex feature requirements into testable components, ensuring alignment between expected behaviour and implemented functionality prior to delivery</li>
+          <li>Performed pre-release system validation covering functional stability, performance benchmarks, and UI correctness — directly supporting zero-defect delivery milestones</li>
+          <li>Coordinated with management and developers to clarify requirements and surface ambiguities early, reducing downstream rework and improving test coverage accuracy</li>
+          <li>Led task execution within a small development team, ensuring alignment between technical work and project objectives</li>
+        </ul>
+        <div class="exp-tags">
+          <span class="exp-tag">System Validation</span>
+          <span class="exp-tag">Pre-release Testing</span>
+          <span class="exp-tag">Requirements Clarification</span>
+          <span class="exp-tag">Team Coordination</span>
+          <span class="exp-tag">Agile</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-wrap">
+    <div class="section-label">Projects</div>
+    <div class="section-title">Things I've<br>built & shipped.</div>
+    <div class="projects-grid">
+
+      <div class="project-card">
+        <div class="project-num">01</div>
+        <div class="project-label">Final Year Project · UBIT</div>
+        <div class="project-title">AI Agent System</div>
+        <p class="project-desc">Designed and built a multi-component AI agent system as a final year capstone. Covered end-to-end system architecture, prompt engineering, LLM integration, and structured testing of autonomous agent workflows. Applied software engineering principles to ensure reliability and traceability of outputs.</p>
+        <div class="project-stack">
+          <span class="stack-tag">AI Agents</span>
+          <span class="stack-tag">LLM Integration</span>
+          <span class="stack-tag">Prompt Engineering</span>
+          <span class="stack-tag">Python</span>
+          <span class="stack-tag">System Architecture</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-num">02</div>
+        <div class="project-label">SQA Internship · P3 Financial Group</div>
+        <div class="project-title">Fintech QA Suite — Web & Mobile</div>
+        <p class="project-desc">Built a comprehensive QA suite for a live fintech platform. Covered transaction workflows, account management modules, and administrative controls across web and mobile. Produced full test case documentation, defect logs with reproducible steps, and performance validation reports across multiple device configs.</p>
+        <div class="project-stack">
+          <span class="stack-tag">Manual Testing</span>
+          <span class="stack-tag">Test Case Design</span>
+          <span class="stack-tag">Mobile Testing</span>
+          <span class="stack-tag">Defect Reporting</span>
+          <span class="stack-tag">Performance Checks</span>
+          <span class="stack-tag">Regression</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-num">03</div>
+        <div class="project-label">Google BI Certificate · Capstone</div>
+        <div class="project-title">BI Data Pipeline & Dashboard</div>
+        <p class="project-desc">Built end-to-end business intelligence pipelines using BigQuery and Looker Studio. Transformed raw datasets into interactive, decision-ready dashboards. Focused on data accuracy, pipeline reliability, and presenting actionable insights to simulated stakeholders — mirroring real BI analyst deliverables.</p>
+        <div class="project-stack">
+          <span class="stack-tag">BigQuery</span>
+          <span class="stack-tag">SQL</span>
+          <span class="stack-tag">Looker Studio</span>
+          <span class="stack-tag">Data Pipelines</span>
+          <span class="stack-tag">BI Dashboards</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-num">04</div>
+        <div class="project-label">Full-Stack Dev · UBIT</div>
+        <div class="project-title">MERN Stack Web Application</div>
+        <p class="project-desc">Designed and developed a full-stack web application using the MERN stack. Applied API testing via Postman to validate all backend endpoints, and used Git/GitHub for version control, branching strategy, and collaborative code reviews. Ensured functional stability through structured pre-deployment testing.</p>
+        <div class="project-stack">
+          <span class="stack-tag">React.js</span>
+          <span class="stack-tag">Node.js</span>
+          <span class="stack-tag">Express.js</span>
+          <span class="stack-tag">MongoDB</span>
+          <span class="stack-tag">Postman</span>
+          <span class="stack-tag">Git / GitHub</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-num">05</div>
+        <div class="project-label">Google PM Certificate · Capstone</div>
+        <div class="project-title">Agile Project Management Simulation</div>
+        <p class="project-desc">Executed a full project lifecycle simulation across stakeholder identification, charter creation, sprint planning, risk registers, and retrospectives. Produced professional PM artefacts including project plans, RACI matrices, and status reports. Applied Agile methodologies end-to-end using Google's PM framework.</p>
+        <div class="project-stack">
+          <span class="stack-tag">Agile / Scrum</span>
+          <span class="stack-tag">Sprint Planning</span>
+          <span class="stack-tag">Risk Management</span>
+          <span class="stack-tag">Stakeholder Comms</span>
+          <span class="stack-tag">RACI Matrix</span>
+          <span class="stack-tag">PM Documentation</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-num">06</div>
+        <div class="project-label">Internship · M-Labs by MindStorm Studios</div>
+        <div class="project-title">Pre-Release System Validation</div>
+        <p class="project-desc">Performed structured pre-release system validation for software products at M-Labs. Decomposed complex feature requirements into testable components, executed functional and UI correctness checks, and directly supported zero-defect delivery milestones. Worked closely with developers to clarify requirements and reduce downstream rework.</p>
+        <div class="project-stack">
+          <span class="stack-tag">System Validation</span>
+          <span class="stack-tag">Functional Testing</span>
+          <span class="stack-tag">UI Testing</span>
+          <span class="stack-tag">Pre-release QA</span>
+          <span class="stack-tag">Requirements</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PERSONAL ATTRIBUTES -->
+<section id="attributes">
+  <div class="section-wrap">
+    <div class="section-label">Personal Attributes</div>
+    <div class="section-title">How I work.</div>
+    <div class="attr-grid">
+      <div class="attr-card">
+        <div class="attr-icon">🔍</div>
+        <div class="attr-text">Strong problem-solving and debugging abilities with a focus on efficient, root-cause solutions — not surface-level band-aids.</div>
+      </div>
+      <div class="attr-card">
+        <div class="attr-icon">🤝</div>
+        <div class="attr-text">Effective communicator and proactive team player — comfortable bridging developer and stakeholder conversations in collaborative environments.</div>
+      </div>
+      <div class="attr-card">
+        <div class="attr-icon">⚡</div>
+        <div class="attr-text">Quick learner, adaptable to emerging technologies and fast-paced project environments. Comfortable picking up new tools, domains, and workflows rapidly.</div>
+      </div>
+      <div class="attr-card">
+        <div class="attr-icon">✅</div>
+        <div class="attr-text">Detail-oriented with a strong commitment to quality, code performance, and accountability. When responsibility increases, so does the effort.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-wrap">
+    <div class="section-label">Get in Touch</div>
+    <div class="contact-inner">
+      <div class="avail-badge">Open to Full-Time & Freelance Roles</div>
+      <div class="contact-line">Let's build<br>something <span class="highlight">great.</span></div>
+      <div class="contact-links">
+        <a href="mailto:tahasheikh30@gmail.com" class="contact-link-row">
+          <div class="clr-left"><span class="clr-icon">📧</span><span class="clr-label">Email</span></div>
+          <div style="display:flex;align-items:center;gap:16px"><span class="clr-value">tahasheikh30@gmail.com</span><span class="clr-arrow">→</span></div>
+        </a>
+        <a href="https://linkedin.com/in/taha-sheikh-a3520921a" target="_blank" class="contact-link-row">
+          <div class="clr-left"><span class="clr-icon">💼</span><span class="clr-label">LinkedIn</span></div>
+          <div style="display:flex;align-items:center;gap:16px"><span class="clr-value">linkedin.com/in/taha-sheikh-a3520921a</span><span class="clr-arrow">→</span></div>
+        </a>
+        <div class="contact-link-row" style="cursor:default">
+          <div class="clr-left"><span class="clr-icon">📞</span><span class="clr-label">Phone</span></div>
+          <span class="clr-value">+92 318 125 6636</span>
+        </div>
+        <div class="contact-link-row" style="cursor:default">
+          <div class="clr-left"><span class="clr-icon">📍</span><span class="clr-label">Location</span></div>
+          <span class="clr-value">Karachi, Pakistan · Remote-ready</span>
+        </div>
+        <div class="contact-link-row" style="cursor:default">
+          <div class="clr-left"><span class="clr-icon">🎯</span><span class="clr-label">Seeking</span></div>
+          <span class="clr-value">SQA Engineer · BA · AI Workflow · PM Roles</span>
+        </div>
+      </div>
+      <div class="contact-footer">
+        <span>© 2025 Taha Ahmed Sheikh</span>
+        <span>BS Software Engineering — UBIT</span>
+        <a href="https://linkedin.com/in/taha-sheikh-a3520921a" target="_blank">LinkedIn ↗</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const dot=document.getElementById('cursorDot'),ring=document.getElementById('cursorRing');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',e=>{
+    mx=e.clientX;my=e.clientY;
+    dot.style.transform=`translate(${mx-3}px,${my-3}px)`;
+  });
+  (function loop(){
+    rx+=(mx-rx)*.12;ry+=(my-ry)*.12;
+    ring.style.transform=`translate(${rx-16}px,${ry-16}px)`;
+    requestAnimationFrame(loop);
+  })();
+  document.querySelectorAll('a,button,.project-card,.edu-card,.attr-card,.contact-link-row,.skill-pill').forEach(el=>{
+    el.addEventListener('mouseenter',()=>ring.classList.add('hover'));
+    el.addEventListener('mouseleave',()=>ring.classList.remove('hover'));
+  });
+
+  // Nav scroll
+  const nav=document.getElementById('navbar');
+  window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>40));
+
+  // Scroll reveal
+  const allReveal=document.querySelectorAll('.timeline-item,.project-card,.skill-block,.attr-card,.edu-card');
+  const obs=new IntersectionObserver(entries=>{
+    let delay=0;
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        setTimeout(()=>{
+          e.target.style.opacity='1';
+          e.target.style.transform='translateY(0)';
+        },delay);
+        delay+=60;
+      }
+    });
+  },{threshold:0.1});
+  allReveal.forEach(el=>{
+    if(!el.classList.contains('timeline-item')){
+      el.style.opacity='0';
+      el.style.transform='translateY(16px)';
+      el.style.transition='opacity .5s ease,transform .5s ease,background .2s,border-color .2s';
+    }
+    obs.observe(el);
+  });
+</script>
+</body>
+</html>
